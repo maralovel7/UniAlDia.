@@ -255,6 +255,29 @@ function sourceQuery(query: string): string {
   return query;
 }
 
+type WebUpdateRow = {
+  title: string;
+  summary: string | null;
+  url: string;
+  source_name: string | null;
+  category: string | null;
+  query: string | null;
+};
+
+async function saveWebUpdates(rows: WebUpdateRow[]): Promise<void> {
+  if (rows.length === 0) return;
+  try {
+    const { url, key } = getSupabaseConfig();
+    await fetch(`${url}/rest/v1/web_updates`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}`, apikey: key, Prefer: "resolution=merge-duplicates" },
+      body: JSON.stringify(rows),
+    });
+  } catch {
+    // Las novedades web son un extra: si falla el guardado, la respuesta sigue siendo válida.
+  }
+}
+
 async function searchInternet(query: string): Promise<string | null> {
   const apiKey = Deno.env.get("TAVILY_API_KEY");
   if (!apiKey) return null;
@@ -268,6 +291,17 @@ async function searchInternet(query: string): Promise<string | null> {
     if (!response.ok) return null;
     const data = await response.json();
     const results = Array.isArray(data.results) ? data.results : [];
+    const updateRows: WebUpdateRow[] = results
+      .filter((item: { url?: string; title?: string }) => typeof item.url === "string" && /^https:\/\//.test(item.url) && typeof item.title === "string" && item.title.trim().length > 0)
+      .map((item: { title?: string; url?: string; content?: string }) => ({
+        title: (item.title || "").trim().slice(0, 300),
+        summary: (item.content || "").trim().slice(0, 280) || null,
+        url: item.url as string,
+        source_name: (() => { try { return new URL(item.url as string).hostname.replace(/^www\./, ""); } catch { return null; } })(),
+        category: "Actualidad",
+        query,
+      }));
+    await saveWebUpdates(updateRows);
     const answer = typeof data.answer === "string" ? `Respuesta de internet (contrástala con la fuente): ${data.answer}\n\n` : "";
     const formatted = results.map((item: { title?: string; url?: string; content?: string }) => `- ${item.title || "Resultado"}\n  Fuente oficial o web: ${item.url || ""}\n  ${(item.content || "").slice(0, 700)}`).join("\n");
     return answer + formatted || null;

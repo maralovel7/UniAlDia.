@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   ArrowUpRight,
+  ExternalLink,
   Bookmark,
   CalendarDays,
   ChevronDown,
@@ -136,6 +137,79 @@ const latestNews = [
     color: 'yellow',
   },
 ];
+
+type WebUpdate = {
+  title: string;
+  summary: string | null;
+  url: string;
+  source_name: string | null;
+  category: string | null;
+};
+
+function timeAgo(iso: string | null): string {
+  if (!iso) return '';
+  const minutes = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (minutes < 1) return 'Ahora mismo';
+  if (minutes < 60) return `Hace ${minutes} min`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `Hace ${hours} h`;
+  return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short' }).format(new Date(iso));
+}
+
+function WebUpdatesSection() {
+  const [updates, setUpdates] = useState<WebUpdate[]>([]);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL || 'https://72207947.supabase.co'}/functions/v1/web-updates`, {
+          signal: AbortSignal.timeout(20000),
+        });
+        const data = await response.json().catch(() => null) as { updates?: unknown } | null;
+        if (cancelled) return;
+        if (!response.ok || !data || !Array.isArray(data.updates)) throw new Error('Respuesta no válida.');
+        setUpdates((data.updates as WebUpdate[]).filter((item) => typeof item?.title === 'string' && typeof item?.url === 'string'));
+        setStatus('ready');
+      } catch {
+        if (!cancelled) setStatus('error');
+      }
+    };
+    void load();
+    return () => { cancelled = true; };
+  }, []);
+
+  if (status === 'loading') {
+    return (
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {[0, 1, 2].map((index) => <div key={index} className="h-40 animate-pulse rounded-2xl bg-navy/10" />)}
+      </div>
+    );
+  }
+  if (status === 'error' || updates.length === 0) return null;
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {updates.slice(0, 6).map((item) => (
+        <a key={item.url} href={item.url} target="_blank" rel="noopener noreferrer" className="group flex flex-col justify-between rounded-2xl border border-navy/10 bg-white p-5 transition hover:-translate-y-1 hover:border-coral hover:shadow-lg">
+          <div>
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <span className="rounded-md bg-navy px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-cream">{item.category || 'Actualidad'}</span>
+              <ExternalLink size={15} className="text-coral" />
+            </div>
+            <h3 className="font-display text-lg font-bold leading-snug tracking-[-0.03em] text-navy transition-colors group-hover:text-coral">{item.title}</h3>
+            {item.summary && <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-navy/55">{item.summary}</p>}
+          </div>
+          <div className="mt-4 flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-navy/40">
+            <span className="truncate">{item.source_name || 'Fuente web'}</span>
+            <span className="flex items-center gap-1.5 text-coral"><span className="live-dot" /> En internet</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  );
+}
 
 type Publication = {
   title: string;
@@ -321,6 +395,13 @@ function MainApp() {
 
         <section id="como-te-afecta" className="bg-navy px-5 py-14 sm:px-8 lg:py-20">
           <div className="mx-auto max-w-7xl"><SectionHeading eyebrow="Nuestra forma de contarlo" title="¿Cómo te afecta?" light /><div className="grid items-stretch gap-5 lg:grid-cols-[0.8fr_1.2fr]"><div className="flex flex-col justify-between rounded-2xl bg-coral p-7 sm:p-9"><div><span className="text-5xl font-black tracking-[-0.08em] text-navy">01—</span><h3 className="mt-14 max-w-sm font-display text-4xl font-bold leading-[0.96] tracking-[-0.05em] text-navy sm:text-5xl">No te contamos solo qué pasa.</h3></div><p className="mt-10 max-w-sm text-base font-medium leading-relaxed text-navy/75">Te explicamos por qué importa, cómo cambia tu día a día y qué puedes hacer tú.</p></div><div className="grid gap-4 sm:grid-cols-3"><div className="impact-step"><span>01</span><h3>Qué pasa</h3><p>La noticia resumida y sin rodeos, para que sepas qué está ocurriendo.</p></div><div className="impact-step active"><span>02</span><h3>Por qué importa</h3><p>El contexto que normalmente se queda fuera de los titulares.</p></div><div className="impact-step"><span>03</span><h3>Qué puedes hacer</h3><p>Ideas y recursos concretos para tomar decisiones informadas.</p></div></div></div></div>
+        </section>
+
+        <section id="ultima-hora" className="px-5 pb-4 sm:px-8">
+          <div className="mx-auto max-w-7xl">
+            <SectionHeading eyebrow="Directo de internet" title="Última hora" />
+            <WebUpdatesSection />
+          </div>
         </section>
 
         <section id="universidad" className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:py-20"><SectionHeading eyebrow="Para tu vida real" title="Más que noticias" /><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"><a href="#guia" className="feature-tile coral-tile"><GraduationCap size={29} /><div><p className="eyebrow text-navy/60">Universidad</p><h3>Sobrevive al curso sin perderte nada</h3></div><ArrowUpRight size={22} /></a><a href="#guia" className="feature-tile blue-tile"><CalendarDays size={29} /><div><p className="eyebrow text-cream/60">Guías</p><h3>Calendario de becas y ayudas</h3></div><ArrowUpRight size={22} /></a><a href="#guia" className="feature-tile image-tile"><img src={images.friends} alt="Patio histórico de Sevilla" /><div className="relative"><p className="eyebrow text-cream/70">Ocio</p><h3>Planes que sí caben en tu presupuesto</h3></div><ArrowUpRight size={22} className="relative" /></a><a href="#guia" className="feature-tile cream-tile"><Search size={29} /><div><p className="eyebrow text-coral">Explora</p><h3>Busca una respuesta rápida</h3></div><ArrowUpRight size={22} /></a></div></section>

@@ -7,7 +7,11 @@
     },
     "agent": {
       "hasChanged": false,
-      "hash": "b160dd3e875291304fb914c9d17dcdd458c95124ab40ca8a58ff770fd37f4fb6"
+      "hash": "afe9f0fdc2a88239bdb9c02397c7a30a36b7783050eae71ec746a5411f80144c"
+    },
+    "web-updates": {
+      "hasChanged": false,
+      "hash": "334c81e21fcdca5ba29f99dcb8f20fdce062a49851e3e9e0d9656d6111168e3d"
     }
   }
 }
