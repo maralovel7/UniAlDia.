@@ -201,7 +201,7 @@ function WebUpdatesSection() {
   if (status === 'loading') {
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {[0, 1, 2].map((index) => <div key={index} className="h-40 animate-pulse rounded-2xl bg-navy/10" />)}
+        {[0, 1, 2].map((index) => <div key={index} className="h-40 animate-pulse rounded-2xl bg-cream/10" />)}
       </div>
     );
   }
@@ -402,13 +402,9 @@ function MainApp() {
           <div className="mx-auto max-w-7xl"><SectionHeading eyebrow="Lo último" title="En tu radar" /><div className="grid gap-6 md:grid-cols-3">{latestNews.map((news) => <article key={news.title} className="news-card group"><div className="relative mb-4 aspect-[1.45] overflow-hidden rounded-2xl"><img src={news.image} alt={news.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className={`category-chip ${news.color}`}>{news.category}</span><button aria-label="Guardar noticia" onClick={() => setSaved(!saved)} className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-cream/95 text-navy transition hover:bg-coral hover:text-cream"> <Bookmark size={16} fill={saved ? 'currentColor' : 'none'} /></button></div><div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-navy/45"><Clock3 size={14} /> {news.time}</div><h3 className="font-display text-[1.45rem] font-bold leading-[1.04] tracking-[-0.035em] text-navy transition-colors group-hover:text-coral"><a href={`/noticias/${news.slug}`}>{news.title}</a></h3><a href={`/noticias/${news.slug}`} className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-coral">Leer la noticia <ChevronRight size={16} /></a></article>)}</div></div>
         </section>
 
-        <section id="como-te-afecta" className="bg-navy px-5 py-14 sm:px-8 lg:py-20">
-          <div className="mx-auto max-w-7xl"><SectionHeading eyebrow="Nuestra forma de contarlo" title="¿Cómo te afecta?" light /><div className="grid items-stretch gap-5 lg:grid-cols-[0.8fr_1.2fr]"><div className="flex flex-col justify-between rounded-2xl bg-coral p-7 sm:p-9"><div><span className="text-5xl font-black tracking-[-0.08em] text-navy">01—</span><h3 className="mt-14 max-w-sm font-display text-4xl font-bold leading-[0.96] tracking-[-0.05em] text-navy sm:text-5xl">No te contamos solo qué pasa.</h3></div><p className="mt-10 max-w-sm text-base font-medium leading-relaxed text-navy/75">Te explicamos por qué importa, cómo cambia tu día a día y qué puedes hacer tú.</p></div><div className="grid gap-4 sm:grid-cols-3"><div className="impact-step"><span>01</span><h3>Qué pasa</h3><p>La noticia resumida y sin rodeos, para que sepas qué está ocurriendo.</p></div><div className="impact-step active"><span>02</span><h3>Por qué importa</h3><p>El contexto que normalmente se queda fuera de los titulares.</p></div><div className="impact-step"><span>03</span><h3>Qué puedes hacer</h3><p>Ideas y recursos concretos para tomar decisiones informadas.</p></div></div></div></div>
-        </section>
-
-        <section id="ultima-hora" className="px-5 pb-4 sm:px-8">
+        <section id="ultima-hora" className="bg-navy px-5 py-12 sm:px-8 lg:py-16">
           <div className="mx-auto max-w-7xl">
-            <SectionHeading eyebrow="Directo de internet" title="Última hora" />
+            <SectionHeading eyebrow="Directo de internet" title="Última hora" light />
             <WebUpdatesSection />
           </div>
         </section>
