@@ -6,12 +6,24 @@ const corsHeaders = {
 
 const refreshIntervalMs = 30 * 60 * 1000;
 const queries = [
-  "Universidad de Sevilla noticias becas ayudas estudiantes",
-  "Sevilla TUSSAM metro tranvía incidencias servicio transporte",
-  "convocatoria becas MEC erasmus plazos estudiantes España",
+  "becas ayudas estudiantes universitarios Sevilla MEC erasmus plazo",
+  "universidad de Sevilla US UPO Loyola Pablo de Olavide noticias estudiantes",
+  "Sevilla transporte TUSSAM metro tranvía cambios afectan estudiantes",
+  "Sevilla alquiler pisos habitaciones estudiantes precios vivienda",
+  "prácticas empleo estudiantes Sevilla ofertas empresas",
 ];
 
-type TavilyResult = { title?: string; url?: string; content?: string };
+// Dominios de medios de comunicación y fuentes oficiales que preferimos mostrar.
+const MEDIA_DOMAINS = [
+  'abc.es', 'sevilla.abc.es', 'elmundo.es', 'eldiario.es', 'elcorreo.com', 'elperiodico.com',
+  'lavanguardia.com', '20minutos.es', 'ideal.es', 'diariosevilla.com', 'lavoz.net',
+  'diariodesevilla.es', 'sevillareport.com', 'rtve.es', 'lasexta.com', 'antena3.com',
+  'cadenaser.com', 'ondacero.es', 'europapress.es', 'andaluciainformacion.es',
+  'elconfidencial.com', 'larazon.es', 'elpais.com', 'sevilla.org', 'tussam.es',
+  'us.es', 'upo.es', 'uloyola.es', 'upo.es', 'juntadeandalucia.es',
+];
+
+type TavilyResult = { title?: string; url?: string; content?: string; published_date?: string };
 
 type UpdateRow = {
   title: string;
@@ -20,6 +32,7 @@ type UpdateRow = {
   source_name: string | null;
   category: string | null;
   query: string | null;
+  found_at: string | null;
 };
 
 function getSupabaseConfig() {
@@ -59,6 +72,25 @@ function categoryForQuery(query: string): string {
   return "Actualidad";
 }
 
+function isRecent(title: string, publishedDate?: string): boolean {
+  const currentYear = new Date().getFullYear();
+  if (publishedDate) {
+    const ts = new Date(publishedDate).getTime();
+    if (!Number.isNaN(ts)) return Date.now() - ts <= 14 * 24 * 60 * 60 * 1000;
+  }
+  // Descarta titulares que mencionan un año pasado explícitamente (p. ej. "becas 2024").
+  return !/(19|20)\d{2}/.test(title) || title.includes(String(currentYear));
+}
+
+function isMediaSource(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    return MEDIA_DOMAINS.some((domain) => host === domain || host.endsWith(`.${domain}`));
+  } catch {
+    return false;
+  }
+}
+
 async function searchWeb(query: string): Promise<UpdateRow[]> {
   const apiKey = Deno.env.get("TAVILY_API_KEY");
   if (!apiKey) return [];
@@ -66,14 +98,21 @@ async function searchWeb(query: string): Promise<UpdateRow[]> {
     const response = await fetch("https://api.tavily.com/search", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({ query, max_results: 6, search_depth: "basic", topic: "general" }),
-      signal: AbortSignal.timeout(12000),
+      body: JSON.stringify({
+        query,
+        max_results: 8,
+        search_depth: "advanced",
+        topic: "news",
+        days: 14,
+      }),
+      signal: AbortSignal.timeout(15000),
     });
     if (!response.ok) return [];
     const data = await response.json();
     const results = Array.isArray(data.results) ? (data.results as TavilyResult[]) : [];
     return results
       .filter((item) => typeof item.url === "string" && /^https:\/\//.test(item.url) && typeof item.title === "string" && item.title.trim().length > 0)
+      .filter((item) => isRecent(item.title || '', item.published_date))
       .map((item) => ({
         title: (item.title || "").trim().slice(0, 300),
         summary: (item.content || "").trim().slice(0, 280) || null,
@@ -81,6 +120,7 @@ async function searchWeb(query: string): Promise<UpdateRow[]> {
         source_name: sourceName(item.url as string),
         category: categoryForQuery(query),
         query,
+        found_at: item.published_date || new Date().toISOString(),
       }));
   } catch {
     return [];
@@ -93,7 +133,8 @@ async function refreshUpdates(): Promise<void> {
   for (const row of found) {
     if (!unique.has(row.url)) unique.set(row.url, row);
   }
-  const rows = [...unique.values()];
+  const media = [...unique.values()].filter((row) => row.url && isMediaSource(row.url));
+  const rows = (media.length >= 6 ? media : [...media, ...[...unique.values()].filter((row) => !isMediaSource(row.url))]).slice(0, 18);
   if (rows.length === 0) return;
   await supabaseRequest("web_updates", { method: "POST", body: JSON.stringify(rows) });
   await supabaseRequest("web_updates_meta?id=eq.true", {
@@ -104,7 +145,7 @@ async function refreshUpdates(): Promise<void> {
 
 async function loadUpdates(): Promise<UpdateRow[]> {
   return supabaseRequest<UpdateRow[]>(
-    "web_updates?select=title,summary,url,source_name,category,query&order=found_at.desc&limit=24",
+    "web_updates?select=title,summary,url,source_name,category,query,found_at&order=found_at.desc&limit=24",
   );
 }
 

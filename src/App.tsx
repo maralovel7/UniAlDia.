@@ -57,12 +57,6 @@ const siteSections: SiteSection[] = [
     href: '#quienes-somos',
     items: [
       { title: 'El equipo', href: '/proyecto#equipo' },
-      { title: 'Paula Olivero · Coordinación', href: '/proyecto#paula-olivero' },
-      { title: 'Abril Pérez · Redes sociales', href: '/proyecto#abril-perez' },
-      { title: 'Laura Gallegos · Contenidos', href: '/proyecto#laura-gallegos' },
-      { title: 'Manuel Vizuete · Audiovisual e IA', href: '/proyecto#manuel-vizuete' },
-      { title: 'Mar Alonso · Comunidad y web', href: '/proyecto#mar-alonso' },
-      { title: 'José Antonio Moreno · Redacción', href: '/proyecto#jose-antonio-moreno' },
       { title: 'Nuestra historia', href: '#nuestra-historia' },
       { title: 'Universidades y colaboradores', href: '#colaboradores' },
       { title: 'Únete al equipo', href: '#unete-al-equipo' },
