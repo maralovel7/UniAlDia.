@@ -19,6 +19,10 @@ import {
 } from 'lucide-react';
 import ChatWidget from '@/components/ChatWidget';
 import AdminPage from '@/components/AdminPage';
+import ArticlePage from '@/components/ArticlePage';
+import ProjectPage from '@/components/ProjectPage';
+import SiteLogo from '@/components/SiteLogo';
+import { articles } from '@/data/content';
 
 const images = {
   students: 'https://images.pexels.com/photos/34690994/pexels-photo-34690994.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
@@ -26,6 +30,7 @@ const images = {
   friends: 'https://images.pexels.com/photos/37894627/pexels-photo-37894627.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
   campus: 'https://images.pexels.com/photos/16549991/pexels-photo-16549991.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
   city: 'https://images.pexels.com/photos/11829188/pexels-photo-11829188.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  projectCover: '/images/team/WhatsApp_Image_2026-11-23_at_23.15.30.jpeg',
 };
 
 type SiteSection = {
@@ -49,7 +54,13 @@ const siteSections: SiteSection[] = [
     title: 'Quiénes somos',
     href: '#quienes-somos',
     items: [
-      { title: 'El equipo', href: '#el-equipo' },
+      { title: 'El equipo', href: '/proyecto#equipo' },
+      { title: 'Paula Olivero · Coordinación', href: '/proyecto#paula-olivero' },
+      { title: 'Abril Pérez · Redes sociales', href: '/proyecto#abril-perez' },
+      { title: 'Laura Gallegos · Contenidos', href: '/proyecto#laura-gallegos' },
+      { title: 'Manuel Vizuete · Audiovisual e IA', href: '/proyecto#manuel-vizuete' },
+      { title: 'Mar Alonso · Comunidad y web', href: '/proyecto#mar-alonso' },
+      { title: 'José Antonio Moreno · Redacción', href: '/proyecto#jose-antonio-moreno' },
       { title: 'Nuestra historia', href: '#nuestra-historia' },
       { title: 'Universidades y colaboradores', href: '#colaboradores' },
       { title: 'Únete al equipo', href: '#unete-al-equipo' },
@@ -82,8 +93,8 @@ const siteSections: SiteSection[] = [
     title: 'Noticias y blog',
     href: '#actualidad',
     items: [
-      { title: 'Calendario de becas del curso', href: '#calendario-becas' },
-      { title: 'Erasmus: lo que nadie te cuenta', href: '#blog-erasmus' },
+      { title: 'Calendario de becas del curso', href: '/noticias/becas-ayudas-requisitos-fechas-clave' },
+      { title: 'Erasmus: lo que nadie te cuenta', href: '/noticias/erasmus-movilidad-guia-practica' },
       { title: 'Barrios para vivir en Sevilla', href: '#barrios-sevilla' },
       { title: 'Entrevistas', href: '#entrevistas' },
       { title: 'Tu primer CV paso a paso', href: '#primer-cv' },
@@ -116,6 +127,7 @@ const siteSections: SiteSection[] = [
 
 const latestNews = [
   {
+    slug: 'alquilar-habitacion-sevilla-zonas-precios',
     category: 'VIVIENDA',
     title: 'Alquilar una habitación en Sevilla ya cuesta más que nunca: estas son las zonas que aún respiran',
     image: images.city,
@@ -123,6 +135,7 @@ const latestNews = [
     color: 'coral',
   },
   {
+    slug: 'nuevas-ayudas-estudiantes-us-requisitos-fechas',
     category: 'UNIVERSIDAD',
     title: 'La US activa nuevas ayudas para estudiantes: requisitos y fechas clave',
     image: images.campus,
@@ -130,6 +143,7 @@ const latestNews = [
     color: 'blue',
   },
   {
+    slug: 'planes-baratos-sevilla-estudiantes',
     category: 'OCIO',
     title: 'Plan de finde: seis terrazas para sobrevivir al calor sin salir de Sevilla',
     image: images.friends,
@@ -221,12 +235,12 @@ type Publication = {
 };
 
 const publications: Publication[] = [
-  { title: 'Lo que está pasando en Sevilla y sí te afecta', category: 'Actualidad', description: 'La actualidad de la ciudad resumida y explicada para que entiendas cómo te afecta.', href: '#inicio', image: images.students, time: '4 min' },
-  { title: 'El transporte cambia: esto es lo que tienes que saber antes de subirte', category: 'Sevilla', description: 'Novedades en bus, metro y tranvía: rutas, tarifas e incidencias del transporte urbano.', href: '#transporte', image: images.seville, time: '3 min' },
-  { title: 'La guía rápida para entender tus derechos como inquilino', category: 'Vivienda', description: 'Todo lo que necesitas saber sobre contratos, fianzas y derechos al alquilar un piso.', href: '#vivienda', time: '5 min' },
+  { title: 'Conoce nuestro proyecto', category: 'Sobre el proyecto', description: 'La idea, el propósito y las personas que hacen posible UniAlDía.', href: '/proyecto', time: '5 min' },
+  { title: 'El transporte cambia: esto es lo que tienes que saber antes de subirte', category: 'Sevilla', description: 'Novedades en bus, metro y tranvía: rutas, tarifas e incidencias del transporte urbano.', href: '/noticias/transporte-sevilla-cambios-lineas-tarifas', image: images.seville, time: '3 min' },
+  { title: 'La guía rápida para entender tus derechos como inquilino', category: 'Vivienda', description: 'Todo lo que necesitas saber sobre contratos, fianzas y derechos al alquilar un piso.', href: '/noticias/alquilar-habitacion-sevilla-zonas-precios', image: images.city, time: '5 min' },
   ...latestNews.map((n) => ({ title: n.title, category: n.category, description: n.title, href: '#actualidad', image: n.image, time: n.time })),
-  { title: 'Becas y ayudas: requisitos y fechas clave', category: 'Guía del estudiante', description: 'Calendario de becas, ayudas y subvenciones para estudiantes universitarios en Sevilla.', href: '#becas' },
-  { title: 'Erasmus y movilidad: lo que nadie te cuenta', category: 'Guía del estudiante', description: 'Trámites, destinos, consejos prácticos y errores comunes al irte de Erasmus.', href: '#erasmus' },
+  { title: 'Becas y ayudas: requisitos y fechas clave', category: 'Guía del estudiante', description: 'Calendario de becas, ayudas y subvenciones para estudiantes universitarios en Sevilla.', href: '/noticias/becas-ayudas-requisitos-fechas-clave' },
+  { title: 'Erasmus y movilidad: lo que nadie te cuenta', category: 'Guía del estudiante', description: 'Trámites, destinos, consejos prácticos y errores comunes al irte de Erasmus.', href: '/noticias/erasmus-movilidad-guia-practica' },
   { title: 'Pisos y residencias en Sevilla', category: 'Guía del estudiante', description: 'Barrios, precios y consejos para encontrar alojamiento asequible en Sevilla.', href: '#vivienda' },
   { title: 'Transporte y rutas para llegar a tu facultad', category: 'Guía del estudiante', description: 'Cómo moverte por Sevilla en bus, metro, tranvía y bici hasta el campus.', href: '#transporte' },
   { title: 'Empleo y prácticas: tu primer CV paso a paso', category: 'Guía del estudiante', description: 'Plantillas, consejos y recursos para encontrar prácticas y tu primer empleo.', href: '#empleo' },
@@ -264,15 +278,6 @@ function searchPublications(query: string): Publication[] {
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
     .map((entry) => entry.pub);
-}
-
-function Logo({ footer = false }: { footer?: boolean }) {
-  return (
-    <a href="#inicio" className="flex items-center gap-2.5" aria-label="UniAlDía, inicio">
-      <span className="logo-mark"><img src="/images/unialdia-calendar.png" alt="" aria-hidden="true" /></span>
-      <span className={`text-[1.75rem] font-black tracking-[-0.07em] ${footer ? 'text-cream' : 'text-navy'}`}>Uni<span className="text-coral">AlDía</span></span>
-    </a>
-  );
 }
 
 function SectionHeading({ eyebrow, title, light = false }: { eyebrow: string; title: string; light?: boolean }) {
@@ -332,7 +337,7 @@ function MainApp() {
 
       <header className="sticky top-0 z-30 border-b border-navy/10 bg-cream/95 backdrop-blur-md">
         <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8">
-          <Logo />
+          <SiteLogo />
           <div className="flex items-center gap-2">
             <button aria-label="Buscar" className="icon-button hidden sm:inline-flex" onClick={() => { setSearchOpen(true); setTimeout(() => document.getElementById('site-search-input')?.focus(), 50); }}><Search size={19} /></button>
             <a href="#newsletter" className="pill-button hidden sm:inline-flex">Únete a la comunidad <ArrowUpRight size={16} /></a>
@@ -373,24 +378,24 @@ function MainApp() {
         <section className="mx-auto max-w-7xl px-5 pb-12 pt-8 sm:px-8 sm:pt-12 lg:pb-20 lg:pt-16">
           <div className="mb-7 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.14em] text-coral"><span className="live-dot" /> En Sevilla, ahora</div>
           <div className="grid gap-5 lg:grid-cols-[1.4fr_0.6fr]">
-            <article className="hero-card group">
-              <img src={images.students} alt="Rectorado de la Universidad de Sevilla" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+            <a href="/proyecto" target="_blank" rel="noopener noreferrer" className="hero-card group block">
+              <img src={images.projectCover} alt="Conoce el proyecto UniAlDía" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
               <div className="hero-overlay absolute inset-0" />
               <div className="relative flex h-full min-h-[480px] flex-col justify-end p-6 sm:min-h-[560px] sm:p-10 lg:min-h-[570px]">
-                <div className="mb-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-cream"><span className="rounded-full bg-coral px-3 py-1.5">Actualidad</span><span>Lectura de 4 min</span></div>
-                <h1 className="max-w-3xl font-display text-[2.7rem] font-bold leading-[0.95] tracking-[-0.055em] text-cream sm:text-6xl lg:text-[4.5rem]">Lo que está pasando en Sevilla y sí te afecta</h1>
-                <div className="mt-7 flex items-center justify-between border-t border-cream/30 pt-4 text-sm font-medium text-cream/80"><span>La actualidad, en claro.</span><ArrowUpRight size={22} className="text-cream" /></div>
+                <div className="mb-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-cream"><span className="rounded-full bg-coral px-3 py-1.5">Nuestro proyecto</span><span>Se abre en otra pestaña</span></div>
+                <h1 className="max-w-3xl font-display text-[2.7rem] font-bold leading-[0.95] tracking-[-0.055em] text-cream sm:text-6xl lg:text-[4.5rem]">Conoce nuestro proyecto</h1>
+                <div className="mt-7 flex items-center justify-between border-t border-cream/30 pt-4 text-sm font-medium text-cream/80"><span>La actualidad que te afecta.</span><ArrowUpRight size={22} className="text-cream" /></div>
               </div>
-            </article>
+            </a>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
-              <article className="side-story group bg-navy"><div className="relative h-44 overflow-hidden sm:h-full lg:h-44"><img src={images.seville} alt="Autobús urbano TUSSAM en una calle de Sevilla" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className="absolute left-4 top-4 rounded-full bg-cream px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-navy">Sevilla</span></div><div className="flex flex-col justify-between p-5 lg:p-6"><h2 className="font-display text-2xl font-bold leading-[1.02] tracking-[-0.04em] text-cream">El transporte cambia: esto es lo que tienes que saber antes de subirte</h2><div className="mt-5 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-cream/60"><span>3 min de lectura</span><ArrowUpRight size={19} className="text-coral" /></div></div></article>
-              <article className="side-story group border border-navy/10 bg-coral"><div className="flex flex-col justify-between p-5 lg:p-6"><div><span className="eyebrow text-navy/70">¿Cómo te afecta?</span><h2 className="mt-3 font-display text-2xl font-bold leading-[1.02] tracking-[-0.04em] text-navy">La guía rápida para entender tus derechos como inquilino</h2></div><div className="mt-8 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-navy/70"><span>Guía útil · 5 min</span><span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-cream"><ArrowUpRight size={18} /></span></div></div></article>
+              <a href="/noticias/transporte-sevilla-cambios-lineas-tarifas" className="side-story group bg-navy"><div className="relative h-44 overflow-hidden sm:h-full lg:h-44"><img src={images.seville} alt="Autobús urbano TUSSAM en una calle de Sevilla" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className="absolute left-4 top-4 rounded-full bg-cream px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-navy">Sevilla</span></div><div className="flex flex-col justify-between p-5 lg:p-6"><h2 className="font-display text-2xl font-bold leading-[1.02] tracking-[-0.04em] text-cream">El transporte cambia: esto es lo que tienes que saber antes de subirte</h2><div className="mt-5 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-cream/60"><span>3 min de lectura</span><ArrowUpRight size={19} className="text-coral" /></div></div></a>
+              <a href="/noticias/alquilar-habitacion-sevilla-zonas-precios" className="side-story group border border-navy/10 bg-coral"><div className="flex flex-col justify-between p-5 lg:p-6"><div><span className="eyebrow text-navy/70">¿Cómo te afecta?</span><h2 className="mt-3 font-display text-2xl font-bold leading-[1.02] tracking-[-0.04em] text-navy">La guía rápida para entender tus derechos como inquilino</h2></div><div className="mt-8 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-navy/70"><span>Guía útil · 5 min</span><span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-cream"><ArrowUpRight size={18} /></span></div></div></a>
             </div>
           </div>
         </section>
 
         <section id="actualidad" className="border-y border-navy/10 bg-white px-5 py-12 sm:px-8 lg:py-16">
-          <div className="mx-auto max-w-7xl"><SectionHeading eyebrow="Lo último" title="En tu radar" /><div className="grid gap-6 md:grid-cols-3">{latestNews.map((news) => <article key={news.title} className="news-card group"><div className="relative mb-4 aspect-[1.45] overflow-hidden rounded-2xl"><img src={news.image} alt={news.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className={`category-chip ${news.color}`}>{news.category}</span><button aria-label="Guardar noticia" onClick={() => setSaved(!saved)} className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-cream/95 text-navy transition hover:bg-coral hover:text-cream"> <Bookmark size={16} fill={saved ? 'currentColor' : 'none'} /></button></div><div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-navy/45"><Clock3 size={14} /> {news.time}</div><h3 className="font-display text-[1.45rem] font-bold leading-[1.04] tracking-[-0.035em] text-navy transition-colors group-hover:text-coral">{news.title}</h3><a href="#como-te-afecta" className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-coral">Entenderlo mejor <ChevronRight size={16} /></a></article>)}</div></div>
+          <div className="mx-auto max-w-7xl"><SectionHeading eyebrow="Lo último" title="En tu radar" /><div className="grid gap-6 md:grid-cols-3">{latestNews.map((news) => <article key={news.title} className="news-card group"><div className="relative mb-4 aspect-[1.45] overflow-hidden rounded-2xl"><img src={news.image} alt={news.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className={`category-chip ${news.color}`}>{news.category}</span><button aria-label="Guardar noticia" onClick={() => setSaved(!saved)} className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-cream/95 text-navy transition hover:bg-coral hover:text-cream"> <Bookmark size={16} fill={saved ? 'currentColor' : 'none'} /></button></div><div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-navy/45"><Clock3 size={14} /> {news.time}</div><h3 className="font-display text-[1.45rem] font-bold leading-[1.04] tracking-[-0.035em] text-navy transition-colors group-hover:text-coral"><a href={`/noticias/${news.slug}`}>{news.title}</a></h3><a href={`/noticias/${news.slug}`} className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-coral">Leer la noticia <ChevronRight size={16} /></a></article>)}</div></div>
         </section>
 
         <section id="como-te-afecta" className="bg-navy px-5 py-14 sm:px-8 lg:py-20">
@@ -409,7 +414,7 @@ function MainApp() {
         <section id="newsletter" className="border-t border-navy/10 bg-[#f8e5d3] px-5 py-14 sm:px-8 lg:py-20"><div className="mx-auto grid max-w-7xl items-end gap-8 lg:grid-cols-[1fr_0.8fr]"><div><p className="eyebrow mb-3 text-coral">El briefing de UniAlDía</p><h2 className="max-w-xl font-display text-4xl font-bold leading-[0.95] tracking-[-0.05em] text-navy sm:text-6xl">Lo importante, directo a tu bandeja.</h2></div><div><p className="mb-5 max-w-md text-base leading-relaxed text-navy/70">Una dosis de actualidad útil para empezar la semana con contexto. Sin spam. Solo lo que te interesa.</p>{subscribed ? <div className="flex items-center gap-3 rounded-xl bg-navy px-5 py-4 font-bold text-cream"><span className="grid h-7 w-7 place-items-center rounded-full bg-coral">✓</span> Ya estás dentro. Nos vemos el lunes.</div> : <form onSubmit={handleSubscribe} className="flex flex-col gap-2 sm:flex-row"><label htmlFor="email" className="sr-only">Tu email</label><input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@email.com" className="min-h-12 flex-1 rounded-xl border border-navy/15 bg-cream px-4 text-sm text-navy outline-none placeholder:text-navy/40 focus:border-coral" /><button className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-coral px-5 text-sm font-extrabold text-navy transition hover:bg-navy hover:text-cream">Suscribirme <Send size={16} /></button></form>}</div></div></section>
       </main>
 
-      <footer className="bg-navy px-5 py-10 text-cream sm:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-col justify-between gap-8 border-b border-cream/15 pb-9 md:flex-row md:items-end"><div><Logo footer /><p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/60">La actualidad que te afecta. Un medio hecho en Sevilla para entender mejor lo que pasa.</p></div><div className="flex gap-3"><a href="https://www.instagram.com/unialdia" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-link"><Instagram size={18} /></a><a href="#tiktok" aria-label="TikTok" className="social-link"><Music2 size={18} /></a><a href="#youtube" aria-label="YouTube" className="social-link"><Youtube size={18} /></a><a href="https://chat.whatsapp.com/BORqs9hCbnf9ntOF1pNujZ" target="_blank" rel="noopener noreferrer" aria-label="Comunidad de WhatsApp" className="social-link"><Send size={18} /></a></div></div><div className="flex flex-col justify-between gap-3 pt-6 text-xs font-medium text-cream/45 sm:flex-row"><span>© 2026 UniAlDía</span><span>Hecho para la generación que quiere enterarse de verdad.</span></div></div></footer>
+      <footer className="bg-navy px-5 py-10 text-cream sm:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-col justify-between gap-8 border-b border-cream/15 pb-9 md:flex-row md:items-end"><div><SiteLogo footer /><p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/60">La actualidad que te afecta. Un medio hecho en Sevilla para entender mejor lo que pasa.</p></div><div className="flex gap-3"><a href="https://www.instagram.com/unialdia" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-link"><Instagram size={18} /></a><a href="#tiktok" aria-label="TikTok" className="social-link"><Music2 size={18} /></a><a href="#youtube" aria-label="YouTube" className="social-link"><Youtube size={18} /></a><a href="https://chat.whatsapp.com/BORqs9hCbnf9ntOF1pNujZ" target="_blank" rel="noopener noreferrer" aria-label="Comunidad de WhatsApp" className="social-link"><Send size={18} /></a></div></div><div className="flex flex-col justify-between gap-3 pt-6 text-xs font-medium text-cream/45 sm:flex-row"><span>© 2026 UniAlDía</span><span>Hecho para la generación que quiere enterarse de verdad.</span></div></div></footer>
 
       <ChatWidget />
     </div>
@@ -417,7 +422,14 @@ function MainApp() {
 }
 
 function App() {
-  return window.location.pathname.startsWith('/admin') ? <AdminPage /> : <MainApp />;
+  const pathname = window.location.pathname;
+  if (pathname.startsWith('/admin')) return <AdminPage />;
+  if (pathname === '/proyecto' || pathname.startsWith('/proyecto/')) return <ProjectPage />;
+  if (pathname.startsWith('/noticias/')) {
+    const article = articles.find((item) => `/noticias/${item.slug}` === pathname);
+    if (article) return <ArticlePage article={article} />;
+  }
+  return <MainApp />;
 }
 
 export default App;
