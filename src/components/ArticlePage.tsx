@@ -54,7 +54,7 @@ export default function ArticlePage({ article }: ArticlePageProps) {
         </section>
       </main>
 
-      <footer className="bg-navy px-5 py-8 text-cream sm:px-8"><div className="mx-auto flex max-w-5xl items-center justify-between gap-5"><SiteLogo footer /><span className="text-right text-xs text-cream/55">La actualidad que te afecta.</span></div></footer>
+      <footer className="bg-navy px-5 py-8 text-cream sm:px-8"><div className="mx-auto flex max-w-5xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"><SiteLogo footer /><div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-right text-xs text-cream/55"><a href="/aviso-legal" className="transition hover:text-cream">Aviso legal</a><a href="/cookies" className="transition hover:text-cream">Cookies</a><span>La actualidad que te afecta.</span></div></div></footer>
     </div>
   );
 }

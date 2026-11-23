@@ -22,6 +22,8 @@ import AdminPage from '@/components/AdminPage';
 import ArticlePage from '@/components/ArticlePage';
 import ProjectPage from '@/components/ProjectPage';
 import SiteLogo from '@/components/SiteLogo';
+import CookieConsent from '@/components/CookieConsent';
+import LegalPage from '@/components/LegalPage';
 import { articles } from '@/data/content';
 
 const images = {
@@ -121,6 +123,8 @@ const siteSections: SiteSection[] = [
       { title: 'Redes sociales', href: '#redes-sociales' },
       { title: 'Colabora con nosotros', href: '#colabora' },
       { title: 'Anúnciate en UniAlDía', href: '#anunciate' },
+      { title: 'Aviso legal', href: '/aviso-legal' },
+      { title: 'Política de cookies', href: '/cookies' },
     ],
   },
 ];
@@ -414,22 +418,28 @@ function MainApp() {
         <section id="newsletter" className="border-t border-navy/10 bg-[#f8e5d3] px-5 py-14 sm:px-8 lg:py-20"><div className="mx-auto grid max-w-7xl items-end gap-8 lg:grid-cols-[1fr_0.8fr]"><div><p className="eyebrow mb-3 text-coral">El briefing de UniAlDía</p><h2 className="max-w-xl font-display text-4xl font-bold leading-[0.95] tracking-[-0.05em] text-navy sm:text-6xl">Lo importante, directo a tu bandeja.</h2></div><div><p className="mb-5 max-w-md text-base leading-relaxed text-navy/70">Una dosis de actualidad útil para empezar la semana con contexto. Sin spam. Solo lo que te interesa.</p>{subscribed ? <div className="flex items-center gap-3 rounded-xl bg-navy px-5 py-4 font-bold text-cream"><span className="grid h-7 w-7 place-items-center rounded-full bg-coral">✓</span> Ya estás dentro. Nos vemos el lunes.</div> : <form onSubmit={handleSubscribe} className="flex flex-col gap-2 sm:flex-row"><label htmlFor="email" className="sr-only">Tu email</label><input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@email.com" className="min-h-12 flex-1 rounded-xl border border-navy/15 bg-cream px-4 text-sm text-navy outline-none placeholder:text-navy/40 focus:border-coral" /><button className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-coral px-5 text-sm font-extrabold text-navy transition hover:bg-navy hover:text-cream">Suscribirme <Send size={16} /></button></form>}</div></div></section>
       </main>
 
-      <footer className="bg-navy px-5 py-10 text-cream sm:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-col justify-between gap-8 border-b border-cream/15 pb-9 md:flex-row md:items-end"><div><SiteLogo footer /><p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/60">La actualidad que te afecta. Un medio hecho en Sevilla para entender mejor lo que pasa.</p></div><div className="flex gap-3"><a href="https://www.instagram.com/unialdia" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-link"><Instagram size={18} /></a><a href="#tiktok" aria-label="TikTok" className="social-link"><Music2 size={18} /></a><a href="#youtube" aria-label="YouTube" className="social-link"><Youtube size={18} /></a><a href="https://chat.whatsapp.com/BORqs9hCbnf9ntOF1pNujZ" target="_blank" rel="noopener noreferrer" aria-label="Comunidad de WhatsApp" className="social-link"><Send size={18} /></a></div></div><div className="flex flex-col justify-between gap-3 pt-6 text-xs font-medium text-cream/45 sm:flex-row"><span>© 2026 UniAlDía</span><span>Hecho para la generación que quiere enterarse de verdad.</span></div></div></footer>
+      <footer className="bg-navy px-5 py-10 text-cream sm:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-col justify-between gap-8 border-b border-cream/15 pb-9 md:flex-row md:items-end"><div><SiteLogo footer /><p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/60">La actualidad que te afecta. Un medio hecho en Sevilla para entender mejor lo que pasa.</p></div><div className="flex gap-3"><a href="https://www.instagram.com/unialdia" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-link"><Instagram size={18} /></a><a href="#tiktok" aria-label="TikTok" className="social-link"><Music2 size={18} /></a><a href="#youtube" aria-label="YouTube" className="social-link"><Youtube size={18} /></a><a href="https://chat.whatsapp.com/BORqs9hCbnf9ntOF1pNujZ" target="_blank" rel="noopener noreferrer" aria-label="Comunidad de WhatsApp" className="social-link"><Send size={18} /></a></div></div><div className="flex flex-col justify-between gap-3 pt-6 text-xs font-medium text-cream/45 sm:flex-row"><span>© 2026 UniAlDía</span><div className="flex flex-wrap gap-x-4 gap-y-2"><a href="/aviso-legal" className="transition hover:text-cream">Aviso legal</a><a href="/cookies" className="transition hover:text-cream">Cookies</a><span>Hecho para la generación que quiere enterarse de verdad.</span></div></div></div></footer>
 
       <ChatWidget />
     </div>
   );
 }
 
+function PublicPage({ children }: { children: React.ReactNode }) {
+  return <><>{children}</><CookieConsent /></>;
+}
+
 function App() {
   const pathname = window.location.pathname;
   if (pathname.startsWith('/admin')) return <AdminPage />;
-  if (pathname === '/proyecto' || pathname.startsWith('/proyecto/')) return <ProjectPage />;
+  if (pathname === '/aviso-legal') return <PublicPage><LegalPage page="legal" /></PublicPage>;
+  if (pathname === '/cookies') return <PublicPage><LegalPage page="cookies" /></PublicPage>;
+  if (pathname === '/proyecto' || pathname.startsWith('/proyecto/')) return <PublicPage><ProjectPage /></PublicPage>;
   if (pathname.startsWith('/noticias/')) {
     const article = articles.find((item) => `/noticias/${item.slug}` === pathname);
-    if (article) return <ArticlePage article={article} />;
+    if (article) return <PublicPage><ArticlePage article={article} /></PublicPage>;
   }
-  return <MainApp />;
+  return <PublicPage><MainApp /></PublicPage>;
 }
 
 export default App;

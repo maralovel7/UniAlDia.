@@ -37,7 +37,7 @@ export default function ProjectPage() {
         <section className="mx-auto grid max-w-7xl items-center gap-8 px-5 py-14 sm:px-8 lg:grid-cols-2 lg:py-20"><img src="/images/project-info/Gemini_Generated_Image_pzteqfpzteqfpzte.jpg" alt="El equipo de UniAlDía trabajando" className="w-full rounded-3xl" /><div><p className="eyebrow text-coral">Nuestro compromiso</p><h2 className="mt-3 font-display text-4xl font-bold leading-[0.97] tracking-[-0.05em] sm:text-5xl">Tu compañero ya lo sabe.</h2><p className="mt-5 text-lg leading-relaxed text-navy/70">Queremos que encuentres en UniAlDía la información que necesitas para moverte por tu ciudad, aprovechar tus oportunidades y entender mejor lo que ocurre a tu alrededor.</p><a href="/" className="mt-7 inline-flex items-center gap-2 font-extrabold text-coral transition-colors hover:text-navy">Explorar la portada <ArrowUpRight size={17} /></a></div></section>
       </main>
 
-      <footer className="bg-navy px-5 py-8 text-cream sm:px-8"><div className="mx-auto flex max-w-7xl items-center justify-between gap-5"><SiteLogo footer /><span className="text-right text-xs text-cream/55">Hecho para la generación que quiere enterarse de verdad.</span></div></footer>
+      <footer className="bg-navy px-5 py-8 text-cream sm:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"><SiteLogo footer /><div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-right text-xs text-cream/55"><a href="/aviso-legal" className="transition hover:text-cream">Aviso legal</a><a href="/cookies" className="transition hover:text-cream">Cookies</a><span>Hecho para la generación que quiere enterarse de verdad.</span></div></div></footer>
     </div>
   );
 }
