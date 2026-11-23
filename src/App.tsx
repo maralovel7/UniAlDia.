@@ -376,11 +376,11 @@ function MainApp() {
         <section className="mx-auto max-w-7xl px-5 pb-12 pt-8 sm:px-8 sm:pt-12 lg:pb-20 lg:pt-16">
           <div className="mb-7 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.14em] text-coral"><span className="live-dot" /> En Sevilla, ahora</div>
           <div className="grid gap-5 lg:grid-cols-[1.4fr_0.6fr]">
-            <a href="/proyecto" target="_blank" rel="noopener noreferrer" className="hero-card group block">
+            <a href="/proyecto" className="hero-card group block">
               <img src={images.projectCover} alt="Conoce el proyecto UniAlDía" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
               <div className="hero-overlay absolute inset-0" />
               <div className="relative flex h-full min-h-[480px] flex-col justify-end p-6 sm:min-h-[560px] sm:p-10 lg:min-h-[570px]">
-                <div className="mb-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-cream"><span className="rounded-full bg-coral px-3 py-1.5">Nuestro proyecto</span><span>Se abre en otra pestaña</span></div>
+                <div className="mb-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-cream"><span className="rounded-full bg-coral px-3 py-1.5">Nuestro proyecto</span><span>Quiénes somos y qué hacemos</span></div>
                 <h1 className="max-w-3xl font-display text-[2.7rem] font-bold leading-[0.95] tracking-[-0.055em] text-cream sm:text-6xl lg:text-[4.5rem]">Conoce nuestro proyecto</h1>
                 <div className="mt-7 flex items-center justify-between border-t border-cream/30 pt-4 text-sm font-medium text-cream/80"><span>La actualidad que te afecta.</span><ArrowUpRight size={22} className="text-cream" /></div>
               </div>
